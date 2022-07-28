@@ -21,8 +21,14 @@ export default {
   methods: {
     OnSubmit() {
       // Cannot use capital case as event name.
+      // Ensure no empty value will be passed.
+      if (this.inputVal === '') {
+        return;
+      }
       // this.$emit('event-name');
       this.$emit('todo-added', this.inputVal);
+      // Clean the input section.
+      this.inputVal = '';
     },
   },
 };
