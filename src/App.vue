@@ -1,16 +1,14 @@
 <template>
-  <div id="app">
-    <h1>To-do list</h1>
-    <!-- <input type="text" name="inputText" id="inputText" v-model="labelText" /> -->
-    <to-do-form @todo-added="addToDo"></to-do-form>
-    <ul>
-      <li v-for="item in ToDoItems" :key="item.id">
-        <!-- 父層傳給子層用 props -->
-        <!-- <componentTag :title="item.title" :img="item.imgUrl" /> -->
-        <to-do-item :label="item.label" :done="item.done" :id="item.id"></to-do-item>
-      </li>
-    </ul>
-  </div>
+  <h1>To-do list</h1>
+  <!-- <input type="text" name="inputText" id="inputText" v-model="labelText" /> -->
+  <to-do-form @todo-added="addToDo"></to-do-form>
+  <ul>
+    <li v-for="item in ToDoItems" :key="item.id">
+      <!-- 父層傳給子層用 props -->
+      <!-- <componentTag :title="item.title" :img="item.imgUrl" /> -->
+      <to-do-item :label="item.label" :done="item.done" :id="item.id"></to-do-item>
+    </li>
+  </ul>
 </template>
 
 <script>
