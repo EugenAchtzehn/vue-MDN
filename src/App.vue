@@ -1,14 +1,26 @@
 <template>
-  <h1>To-do list</h1>
-  <!-- <input type="text" name="inputText" id="inputText" v-model="labelText" /> -->
-  <to-do-form @todo-added="addToDo"></to-do-form>
-  <ul>
-    <li v-for="item in ToDoItems" :key="item.id">
-      <!-- 父層傳給子層用 props -->
-      <!-- <componentTag :title="item.title" :img="item.imgUrl" /> -->
-      <to-do-item :label="item.label" :done="item.done" :id="item.id"></to-do-item>
-    </li>
-  </ul>
+  <div id="container">
+    <h1>Eugene's To-Do List</h1>
+
+    <!-- <input type="text" name="inputText" id="inputText" v-model="labelText" /> -->
+
+    <to-do-form @todo-added="addToDo"></to-do-form>
+    <h2 id="todo-summary">{{ todoSummary }}</h2>
+    <ul class="stack-large" aria-labelledby="todo-summary">
+      <li v-for="item in ToDoItems" :key="item.id">
+        <!-- 父層傳給子層用 props -->
+        <!-- <componentTag :title="item.title" :img="item.imgUrl" /> -->
+        <to-do-item
+          :label="item.label"
+          :done="item.done"
+          :id="item.id"
+          @checkbox-changed="updateDoneStatus(item.id)"
+          @item-deleted="deleteTodo(item.id)"
+          @item-edited="editTodo(item.id, $event)"
+        ></to-do-item>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -27,10 +39,10 @@ export default {
       // labelText: 'testing',
       // 利用 lodash 套件來附加 UID 功能
       ToDoItems: [
-        { id: uniqueId('todo-'), label: 'Learn Vue', done: false },
-        { id: uniqueId('todo-'), label: 'Create a Vue project with CLI', done: true },
+        { id: uniqueId('todo-'), label: '開啟一個 Vue 專案', done: true },
+        { id: uniqueId('todo-'), label: '學習 Vue3', done: false },
         { id: uniqueId('todo-'), label: 'Have fun', done: false },
-        { id: uniqueId('todo-'), label: 'Complete a to-do list', done: true },
+        { id: uniqueId('todo-'), label: '回台中', done: false },
       ],
     };
   },
@@ -40,12 +52,41 @@ export default {
       // 將 emit 的送出推送到代辦陣列中
       this.ToDoItems.push({ id: uniqueId('todo-'), label: toDoInput, done: false });
     },
+    updateDoneStatus(todoId) {
+      const todoUpdate = this.ToDoItems.find((item) => {
+        return item.id === todoId;
+      });
+      // toggle status
+      // console.log(todoUpdate);
+      todoUpdate.done = !todoUpdate.done;
+    },
+    deleteTodo(todoId) {
+      const itemIndex = this.ToDoItems.findIndex((item) => {
+        return item.id === todoId;
+      });
+      this.ToDoItems.splice(itemIndex, 1);
+    },
+    editTodo(todoId, newLabel) {
+      // console.log('emit event: ', newLabel);
+      const todoToEdit = this.ToDoItems.find((item) => {
+        return item.id === todoId;
+      });
+      todoToEdit.label = newLabel;
+    },
+  },
+  computed: {
+    todoSummary() {
+      const numCompletedItems = this.ToDoItems.filter((item) => {
+        return item.done === true;
+      }).length;
+      return `${this.ToDoItems.length} 項任務已有 ${numCompletedItems} 項完成`;
+    },
   },
 };
 </script>
 
 <style>
-/* #app {
+/* #root {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -133,7 +174,7 @@ export default {
   }
 }
 /* End global styles */
-#app {
+#container {
   background: #fff;
   margin: 2rem 0 4rem 0;
   padding: 1rem;
@@ -142,19 +183,19 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 2.5rem 5rem 0 rgba(0, 0, 0, 0.1);
 }
 @media screen and (min-width: 550px) {
-  #app {
+  #container {
     padding: 4rem;
   }
 }
-#app > * {
+#container > * {
   max-width: 50rem;
   margin-left: auto;
   margin-right: auto;
 }
-#app > form {
+#container > form {
   max-width: 100%;
 }
-#app h1 {
+#container h1 {
   display: block;
   min-width: 100%;
   width: 100%;

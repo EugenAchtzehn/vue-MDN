@@ -1,14 +1,17 @@
 <template>
-  <form>
-    <label for="new-todo">What needs to be done?</label>
+  <form @submit.prevent="OnSubmit">
+    <h2 class="label-wrapper">
+      <label for="new-todo" class="label__lg">What needs to be done?</label>
+    </h2>
     <input
       type="text"
-      name="new-todo"
       id="new-todo"
+      name="new-todo"
       v-model.lazy.trim="inputVal"
       autocomplete="off"
+      class="input__lg"
     />
-    <button @click.prevent="OnSubmit">Add</button>
+    <button type="sumbit" class="btn btn__primary btn__lg">Add</button>
   </form>
 </template>
 <script>
@@ -25,8 +28,10 @@ export default {
       if (this.inputVal === '') {
         return;
       }
+
       // this.$emit('event-name');
       this.$emit('todo-added', this.inputVal);
+
       // Clean the input section.
       this.inputVal = '';
     },
